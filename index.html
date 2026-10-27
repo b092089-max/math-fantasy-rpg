@@ -292,23 +292,7 @@ bank.math3.push(...[["f(x)=x^2 の導関数は？","2x",["2x","x","x^2","2x^2"],
 const addedCounts={elementary:0,junior:0,high1:0,high2:0,high3:0};
 function addGenerated(group,subject,question,answer,wrong,hint,explanation,difficulty){
  const a=String(answer), opts=[a,...wrong.map(String)].filter((x,i,arr)=>arr.indexOf(x)===i);
- // 8択用に正答1つ＋異なる誤答7つを準備する。
- const numberMatch=a.match(/^-?\\d+(?:\\.\\d+)?/);
- let offset=1;
- while(opts.length<8){
-   let candidate;
-   if(numberMatch){
-     const n=Number(numberMatch[0]);
-     const delta=Math.ceil(offset/2)*(offset%2?1:-1);
-     candidate=String(n+delta)+a.slice(numberMatch[0].length);
-   }else{
-     candidate=String(wrong[(offset-1)%wrong.length]??a);
-     // 数式の選択肢を補う場合も、正答と同一にはしない。
-     candidate=candidate+" "+("①②③④⑤⑥⑦⑧"[offset%8]);
-   }
-   if(candidate!==a&&!opts.includes(candidate))opts.push(candidate);
-   offset++;
- }
+ // 既存の誤答を保持し、出題時に不足分を補います。
  const entry=[question,a,opts,hint,explanation];
  entry.grade=group;entry.difficulty=difficulty;
  bank[subject].push(entry);addedCounts[group]++;
@@ -375,8 +359,7 @@ const routeOptions={
 let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
 function addLog(t){state.log.unshift(t);state.log=state.log.slice(0,7);renderLog()}
 function renderLog(){$("log").innerHTML=state.log.length?state.log.map(x=>"• "+escapeHtml(x)).join("<br>"):"冒険を始めると、ここに記録が表示されます。"}
-function formatMath(s){const sup={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹","+":"⁺","-":"⁻","=":"⁼","(":"⁽",")":"⁾","a":"ᵃ","b":"ᵇ","c":"ᶜ","d":"ᵈ","e":"ᵉ","f":"ᶠ","g":"ᵍ","h":"ʰ","i":"ⁱ","j":"ʲ","k":"ᵏ","l":"ˡ","m":"ᵐ","n":"ⁿ","o":"ᵒ","p":"ᵖ","r":"ʳ","s":"ˢ","t":"ᵗ","u":"ᵘ","v":"ᵛ","w":"ʷ","x":"ˣ","y":"ʸ","z":"ᶻ"};return String(s).replace(/\^\{([^}]+)\}/g,(_,e)=>[...e].map(c=>sup[c]||c).join("")).replace(/\^([0-9]+|[a-z])/gi,(_,e)=>[...e].map(c=>sup[c]||c).join(""));}
-function escapeHtml(s){return formatMath(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function render(){
  $("statName").textContent=state.name;$("level").textContent=state.level;$("xpText").textContent=state.xp+" / "+xpNeed();$("gold").textContent=state.gold+" G";$("kills").textContent=state.kills;$("hpText").textContent=state.hp+" / "+state.maxHp;
  $("hpBar").style.width=(state.hp/state.maxHp*100)+"%";$("xpBar").style.width=(state.xp/xpNeed()*100)+"%";
@@ -466,7 +449,7 @@ function optionsFor(q){
  const pool=[...q[2],...(extraChoices[q.scope]||[])];
  const unique=[];
  for(const value of pool){
-   if(!unique.includes(value) && value!==q[1]) unique.push(value);
+   if(!unique.includes(value) && value!==q[1] && !/[①②③④⑤⑥⑦⑧]/.test(String(value))) unique.push(value);
  }
  // Keep the correct answer and seven distinct distractors.
  const distractors=unique.slice(0,7);
@@ -527,8 +510,8 @@ function startBattle(){
  $("routeChoices").classList.add("hidden");
  $("enemyBox").classList.remove("hidden");$("enemyIcon").textContent=state.currentEnemy.icon;$("enemyName").textContent=state.currentEnemy.name;$("battleTitle").textContent=state.currentEnemy.name+(state.currentEnemy.boss?"が立ちはだかった！":"が現れた！");
  $("enemyHpText").textContent=state.enemyHp+" / "+state.enemyMax+" HP";$("enemyHpBar").style.width=(Math.max(0,state.enemyHp)/state.enemyMax*100)+"%";
- $("question").textContent="【"+labels[state.question.scope]+"】 "+formatMath(state.question[0]);
- $("feedback").className="feedback hidden";$("hint").className="feedback hidden";$("hint").textContent="ヒント："+formatMath(state.question[3]);
+ $("question").textContent="【"+labels[state.question.scope]+"】 "+state.question[0];
+ $("feedback").className="feedback hidden";$("hint").className="feedback hidden";$("hint").textContent="ヒント："+state.question[3];
  $("nextBtn").classList.add("hidden");$("hintBtn").disabled=false;
  const opts=optionsFor(state.question);$("answerArea").innerHTML='<div class="choices">'+opts.map((o,i)=>`<button class="choice" data-answer="${escapeHtml(o)}">${["A","B","C","D","E","F","G","H"][i]}. ${escapeHtml(o)}</button>`).join("")+'</div>';
  $("answerArea").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>answer(b.dataset.answer,false)));
