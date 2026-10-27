@@ -44,6 +44,7 @@ select,input[type=text]{width:100%;background:#f8f2df;color:#1a2a30;border:2px s
 .hidden{display:none!important}
 .small{font-size:.86rem;color:var(--muted);line-height:1.5}
 .tag{display:inline-block;padding:4px 8px;background:#29454d;border-radius:99px;font-size:.8rem;margin:2px}
+.shop-item{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--panel2);padding:9px;border-radius:8px;margin:8px 0}.shop-item button{padding:7px 9px;white-space:nowrap}.shop-desc{font-size:.8rem;color:var(--muted);line-height:1.35}
 hr{border:0;border-top:1px solid #49616a;margin:14px 0}
 footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
 @media(max-width:760px){.layout{grid-template-columns:1fr}.scene{min-height:260px}.choices{grid-template-columns:1fr}.mapgrid{gap:6px}.location{padding:7px;font-size:.9rem}}
@@ -87,6 +88,10 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
     <div id="hint" class="feedback hidden"></div>
   </div>
   <div id="endBox" class="hidden" style="margin-top:14px"><h2>🏆 魔王の封印が解けた！</h2><p>世界に平和が戻った。君の冒険は伝説となった！</p><button id="againBtn">もう一度冒険する</button></div>
+  <div id="gameOverBox" class="hidden" style="margin-top:14px;border:2px solid #ff7373;border-radius:10px;padding:16px;background:#351d28">
+    <h2>🌑 ゲームオーバー</h2><p>勇者は力尽きた……世界は闇に覆われ、魔王の支配が始まった。</p>
+    <p>冒険はここで終わってしまった。もう一度、最初から挑戦しよう。</p><button id="gameOverRestartBtn">最初からやり直す</button>
+  </div>
 </main>
 <aside class="panel">
   <h2>勇者のステータス</h2>
@@ -97,12 +102,20 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
     <div class="stat">ゴールド<br><b id="gold">0 G</b></div><div class="stat">討伐数<br><b id="kills">0</b></div>
   </div>
   <hr>
+  <h2>🏪 道具屋</h2>
+  <p class="small">冒険で手に入れたゴールドを使って、回復や強化ができます。</p>
+  <div class="shop-item"><div><b>🌿 回復薬</b><div class="shop-desc">HPを15回復する（15G）</div></div><button id="buyPotionBtn">15 G</button></div>
+  <div class="shop-item"><div><b>💖 エリクサー</b><div class="shop-desc">HPを全回復する（30G）</div></div><button id="buyElixirBtn">30 G</button></div>
+  <div class="shop-item"><div><b>💪 力の秘薬</b><div class="shop-desc">攻撃力が永続的に5上がる（40G）</div></div><button id="buyPowerBtn">40 G</button></div>
+  <div class="shop-item"><div><b>🛡️ 守りの護符</b><div class="shop-desc">受けるダメージが2減る（35G）</div></div><button id="buyGuardBtn">35 G</button></div>
+  <p id="shopMessage" class="small" aria-live="polite">ゴールドを集めて道具を買おう！</p>
+  <hr>
   <h2>冒険の記録</h2>
   <div id="log" class="small">冒険を始めると、ここに記録が表示されます。</div>
   <hr>
   <h2>あそびかた</h2>
   <p class="small">① 出題範囲と難易度を選ぶ<br>② モンスターの問題に答える（敵のHPは引き継がれる）<br>③ 正解して敵にダメージを与え、経験値とゴールドを獲得<br>④ レベルを上げて次のエリアへ！</p>
-  <p class="small">不正解でも大丈夫。解説を確認して再挑戦できます。問題を追加し、同じ範囲でもさまざまな問題に取り組めるようにしました。</p>
+  <p class="small">不正解や時間切れではHPが8減ります。HPが0になるとゲームオーバーです。ゴールドで回復薬や強化アイテムを購入しましょう。</p>
 </aside>
 </div>
 <footer>数学勇者と封印の魔王 — ブラウザで遊べる試作版</footer>
@@ -266,7 +279,7 @@ bank.math3.push(...[["f(x)=x^2 の導関数は？","2x",["2x","x","x^2","2x^2"],
 
 const enemyNames=["スライム","森のゴブリン","洞窟コウモリ","魔法使い","闇の騎士","封印の魔竜"];
 const enemyIcons=["🟢","👺","🦇","🧙‍♂️","🛡️","🐉"];
-let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,log:[]};
+let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
 function addLog(t){state.log.unshift(t);state.log=state.log.slice(0,7);renderLog()}
 function renderLog(){$("log").innerHTML=state.log.length?state.log.map(x=>"• "+escapeHtml(x)).join("<br>"):"冒険を始めると、ここに記録が表示されます。"}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -280,6 +293,30 @@ function render(){
  renderLog();
 }
 function xpNeed(){return 30+(state.level-1)*20}
+function shopBuy(cost, message, action){
+ if(!state.started || state.gameOver || $("endBox").classList.contains("hidden")===false){$("shopMessage").textContent="冒険中に道具を購入できます。";return;}
+ if(state.gold<cost){$("shopMessage").textContent="ゴールドが足りません！";return;}
+ state.gold-=cost;
+ action();
+ $("shopMessage").textContent=message;
+ addLog(message);
+ render();
+ save(false);
+}
+function triggerGameOver(){
+ state.hp=0;state.gameOver=true;stopTimer();
+ $("battle").classList.add("hidden");$("endBox").classList.add("hidden");
+ $("gameOverBox").classList.remove("hidden");
+ $("sceneTitle").textContent="世界は闇に覆われた";
+ $("sceneIcon").textContent="🌑";
+ $("sceneText").textContent="勇者は力尽き、魔王が世界を支配した……";
+ $("enemyBox").classList.add("hidden");
+ $("nextBtn").classList.add("hidden");
+ $("hintBtn").disabled=true;
+ $("answerArea").innerHTML="";
+ addLog("HPが0になった。世界は闇に覆われた……ゲームオーバー。");
+ save(false);
+}
 function getScope(){
  const cumulative={uptoElem:["elem"],uptoJunior:["elem","junior"],uptoHigh1:["elem","junior","math1","mathA"],uptoHigh2:["elem","junior","math1","mathA","math2","mathB"],uptoHigh3:["elem","junior","math1","mathA","math2","mathB","mathC","math3"]};
  if(cumulative[state.scope]) return cumulative[state.scope];
@@ -297,7 +334,7 @@ function chooseQuestion(){
 }
 function begin(){
  state.name=$("heroName").value.trim()||"数学勇者";state.scope=$("scope").value;state.difficulty=$("difficulty").value;state.started=true;
- $("setup").classList.add("hidden");$("endBox").classList.add("hidden");$("battle").classList.remove("hidden");
+ $("setup").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");state.gameOver=false;$("battle").classList.remove("hidden");
  addLog(state.name+"は冒険に出発した！");render();startBattle();
 }
 
@@ -360,11 +397,11 @@ function startBattle(){
  render();startTimer();
 }
 function answer(ans,timedOut=false){
- if(state.answered)return;stopTimer();state.answered=true;state.questionCount++;
+ if(state.answered||state.gameOver)return;stopTimer();state.answered=true;state.questionCount++;
  const q=state.question,correct=ans===q[1];$("answerArea").querySelectorAll("button").forEach(b=>b.disabled=true);
  const fb=$("feedback");fb.classList.remove("hidden");fb.className="feedback "+(correct?"good":"bad");
  if(correct){
-  state.correct++;const damage=8+state.level*3+(q.diff==="advanced"?5:0);state.enemyHp=Math.max(0,state.enemyHp-damage);
+  state.correct++;const damage=8+state.level*3+(q.diff==="advanced"?5:0)+state.attackBonus;state.enemyHp=Math.max(0,state.enemyHp-damage);
   state.xp+=10+(q.diff==="advanced"?5:0);state.gold+=5+Math.floor(Math.random()*6);
   fb.innerHTML="✨ 正解！ "+escapeHtml(q[4])+"<br>敵に"+damage+"ダメージ！ 経験値とゴールドを獲得した。";
   addLog("正解！ "+labels[q.scope]+"の問題をクリア。");
@@ -375,9 +412,12 @@ function answer(ans,timedOut=false){
    else {$("battle").classList.add("hidden");$("endBox").classList.remove("hidden");addLog("魔王の封印を解いた！");}
   }
  }else{
-  state.wrong++;state.hp=Math.max(1,state.hp-3);
-  fb.innerHTML=(timedOut?"⏰ 時間切れ！":"💦 おしい！")+" 正解は「"+escapeHtml(q[1])+"」。<br>"+escapeHtml(q[4])+"<br>HPが3減った。敵のHPはそのまま。次の問題で攻撃を続けよう！";
-  addLog("不正解。解説を確認して次の問題へ。");
+  state.wrong++;
+  const receivedDamage=Math.max(1,8-state.defenseBonus);
+  state.hp=Math.max(0,state.hp-receivedDamage);
+  fb.innerHTML=(timedOut?"⏰ 時間切れ！":"💦 不正解！")+" 正解は「"+escapeHtml(q[1])+"」。<br>"+escapeHtml(q[4])+"<br>敵の攻撃でHPが"+receivedDamage+"減った。敵のHPはそのまま。";
+  addLog("不正解。HPが"+receivedDamage+"減った。");
+  if(state.hp<=0){triggerGameOver();return;}
  }
  $("enemyHpText").textContent=state.enemyHp+" / "+state.enemyMax+" HP";$("enemyHpBar").style.width=(state.enemyHp/state.enemyMax*100)+"%";
  $("nextBtn").classList.remove("hidden");$("hintBtn").disabled=true;render();save(false);
@@ -385,17 +425,26 @@ function answer(ans,timedOut=false){
 $("startBtn").addEventListener("click",begin);
 $("hintBtn").addEventListener("click",()=>{$("hint").classList.remove("hidden");$("hintBtn").disabled=true});
 $("nextBtn").addEventListener("click",()=>{
- if(state.hp<=1){state.hp=state.maxHp;addLog("村で休み、HPが回復した。");}
+ if(state.gameOver)return;
  if(state.kills>=places.length*3 && state.place<places.length-1)state.place++;
  startBattle();
+});
+$("buyPotionBtn").addEventListener("click",()=>shopBuy(15,"回復薬を使い、HPが15回復した。",()=>{const before=state.hp;state.hp=Math.min(state.maxHp,state.hp+15);if(state.hp===before){state.gold+=15;$("shopMessage").textContent="HPは満タンです。ゴールドは返却しました。";}}));
+$("buyElixirBtn").addEventListener("click",()=>shopBuy(30,"エリクサーを使い、HPが全回復した。",()=>{const before=state.hp;state.hp=state.maxHp;if(before===state.maxHp){state.gold+=30;$("shopMessage").textContent="HPは満タンです。ゴールドは返却しました。";}}));
+$("buyPowerBtn").addEventListener("click",()=>shopBuy(40,"力の秘薬を使った。攻撃力が5上がった！",()=>{state.attackBonus+=5;}));
+$("buyGuardBtn").addEventListener("click",()=>shopBuy(35,"守りの護符を装備した。受けるダメージが2減る！",()=>{state.defenseBonus+=2;}));
+$("gameOverRestartBtn").addEventListener("click",()=>{
+ stopTimer();localStorage.removeItem("mathRpgSave");
+ state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
+ $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");$("enemyBox").classList.add("hidden");render();
 });
 $("saveBtn").addEventListener("click",()=>save(true));
 $("loadBtn").addEventListener("click",()=>load(true));
 $("continueBtn").addEventListener("click",()=>load(true));
-$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
+$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
 $("againBtn").addEventListener("click",()=>{stopTimer();state.place=0;state.hp=state.maxHp;state.kills=0;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("battle").classList.remove("hidden");startBattle()});
 function save(show){try{localStorage.setItem("mathRpgSave",JSON.stringify(state));if(show)alert("冒険をセーブしました！");}catch(e){if(show)alert("保存できませんでした。ブラウザの保存設定を確認してください。")}}
-function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");render();if(state.started)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
+function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
 render();
 </script>
 </body>
