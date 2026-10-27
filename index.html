@@ -92,7 +92,12 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
     <div class="row" style="margin-top:12px"><button id="hintBtn" class="choice">ヒントを見る</button><button id="nextBtn" class="hidden">次へ進む ▶</button></div>
     <div id="hint" class="feedback hidden"></div>
   </div>
-  <div id="endBox" class="hidden" style="margin-top:14px"><h2>🏆 魔王の封印が解けた！</h2><p>世界に平和が戻った。君の冒険は伝説となった！</p><button id="againBtn">もう一度冒険する</button></div>
+  <div id="endBox" class="hidden" style="margin-top:14px"><h2>🏆 魔王の封印が解けた！</h2><p>世界に平和が戻った。君の冒険は伝説となった！</p><div class="panel" style="margin:12px 0;background:#203c46">
+<h2>⚙ 次の冒険の出題設定</h2>
+<label for="victoryScope">出題範囲</label><select id="victoryScope"></select>
+<label for="victoryDifficulty">難易度</label><select id="victoryDifficulty"></select>
+<p class="small">変更した設定は次の冒険から適用されます。レベルやゴールド、強化効果は引き継がれます。</p>
+</div><button id="againBtn">この設定でもう一度冒険する</button></div>
   <div id="gameOverBox" class="hidden" style="margin-top:14px;border:2px solid #ff7373;border-radius:10px;padding:16px;background:#351d28">
     <h2>🌑 ゲームオーバー</h2><p>勇者は力尽きた……世界は闇に覆われ、魔王の支配が始まった。</p>
     <p>冒険はここで終わってしまった。もう一度、最初から挑戦しよう。</p><button id="gameOverRestartBtn">最初からやり直す</button>
@@ -282,6 +287,59 @@ bank.mathB.push(...[["初項2、公差3の等差数列の第6項は？","17",["1
 bank.mathC.push(...[["ベクトル a=(1,2)、b=(3,4) の a＋b は？","(4,6)",["(4,6)","(-2,-2)","(3,8)","(4,-2)"],"対応する成分どうしを足そう。","(1+3,2+4)＝(4,6)。"],["ベクトル a=(2,3)、b=(1,5) の a＋b は？","(3,8)",["(3,8)","(1,-2)","(2,15)","(3,-2)"],"対応する成分どうしを足そう。","(2+1,3+5)＝(3,8)。"],["ベクトル a=(4,1)、b=(2,6) の a＋b は？","(6,7)",["(6,7)","(2,-5)","(8,6)","(6,-5)"],"対応する成分どうしを足そう。","(4+2,1+6)＝(6,7)。"],["ベクトル a=(3,5)、b=(2,1) の a＋b は？","(5,6)",["(5,6)","(1,4)","(6,5)","(5,4)"],"対応する成分どうしを足そう。","(3+2,5+1)＝(5,6)。"],["ベクトル a=(6,2)、b=(3,4) の a＋b は？","(9,6)",["(9,6)","(3,-2)","(18,8)","(9,-2)"],"対応する成分どうしを足そう。","(6+3,2+4)＝(9,6)。"],["ベクトル a=(0,7)、b=(5,2) の a＋b は？","(5,9)",["(5,9)","(-5,5)","(0,14)","(5,5)"],"対応する成分どうしを足そう。","(0+5,7+2)＝(5,9)。"],["点(0,0)と点(1,1)の距離は？","√2",["√2","2","0","1"],"距離の公式を使おう。","距離＝√(1²＋1²)＝√2。"],["点(0,0)と点(2,3)の距離は？","√13",["√13","5","1","6"],"距離の公式を使おう。","距離＝√(2²＋3²)＝√13。"],["点(0,0)と点(3,4)の距離は？","5",["5","7","1","12"],"距離の公式を使おう。","距離＝√(3²＋4²)＝5。"],["点(0,0)と点(4,3)の距離は？","5",["5","7","1","12"],"距離の公式を使おう。","距離＝√(4²＋3²)＝5。"],["点(0,0)と点(5,12)の距離は？","13",["13","17","7","60"],"距離の公式を使おう。","距離＝√(5²＋12²)＝13。"],["点(0,0)と点(8,6)の距離は？","10",["10","14","2","48"],"距離の公式を使おう。","距離＝√(8²＋6²)＝10。"],["複素数 i の二乗 i² は？","−1",["−1","1","i","−i"],"虚数単位の定義を思い出そう。","i²＝−1。"],["複素数 3＋2i の実部は？","3",["3","2","i","−3"],"iの付かない部分が実部。","実部は3。"],["複素数 3＋2i の虚部は？","2",["2","3","i","−2"],"iの係数が虚部。","虚部は2。"],["点(2,−3)を原点について対称移動した点は？","(−2,3)",["(−2,3)","(2,3)","(−2,−3)","(3,−2)"],"両方の座標の符号を変える。","(x,y)→(−x,−y)。"],["円 x²＋y²＝25 の半径は？","5",["5","25","10","√10"],"標準形 x²＋y²＝r²。","r²＝25よりr＝5。"],["放物線 y＝x² の頂点は？","(0,0)",["(0,0)","(1,0)","(0,1)","(−1,0)"],"基本形の頂点を考えよう。","頂点は原点。"],["ベクトル (1,2) と (3,4) の内積は？","11",["11","7","10","14"],"対応成分を掛けて足す。","1×3＋2×4＝11。"],["複素数 (2＋i)＋(3＋4i) は？","5＋5i",["5＋5i","5＋4i","6＋5i","5＋3i"],"実部どうし、虚部どうしを足す。","(2＋3)+(1＋4)i＝5＋5i。"],["楕円 x²/9＋y²/4＝1 の長半径は？","3",["3","2","4","9"],"分母の大きい方の平方根。","√9＝3。"],["双曲線 x²/16−y²/9＝1 の a は？","4",["4","3","9","16"],"標準形のa²を読む。","a²＝16よりa＝4。"],["ベクトル (2,0) と (0,3) の内積は？","0",["0","5","6","−6"],"対応する成分を掛けて足す。","2×0＋0×3＝0。"],["複素数 4−3i の共役複素数は？","4＋3i",["4＋3i","−4＋3i","4−3i","−4−3i"],"虚部の符号を反転する。","共役複素数は4＋3i。"],["点(1,2)をx軸について対称移動した点は？","(1,−2)",["(1,−2)","(−1,2)","(−1,−2)","(2,1)"],"x座標はそのまま、y座標の符号を変える。","(x,y)→(x,−y)。"],["ベクトル (3,0) の大きさは？","3",["3","0","9","√3"],"大きさは原点からの距離。","√(3²＋0²)＝3。"],["円 x²＋y²＝49 の中心は？","(0,0)",["(0,0)","(7,0)","(0,7)","(7,7)"],"この形の円の中心は原点。","中心は(0,0)。"],["複素数 i⁴ は？","1",["1","−1","i","−i"],"i²＝−1を使おう。","i⁴＝(i²)²＝1。"],["ベクトル (1,0) と (0,1) は垂直？","垂直",["垂直","平行","同じ向き","判定できない"],"内積が0なら垂直。","内積は0なので垂直。"],["点(−2,5)のx座標は？","−2",["−2","2","5","−5"],"順序対は(x,y)。","x座標は−2。"]]);
 bank.math3.push(...[["f(x)=x^2 の導関数は？","2x",["2x","x","x^2","2x^2"],"べき乗の微分公式を使おう。","(x^2)′＝2x。"],["f(x)=x^3 の導関数は？","3x^2",["3x^2","x^2","2x^3","3x^3"],"べき乗の微分公式を使おう。","(x^3)′＝3x^2。"],["f(x)=x^4 の導関数は？","4x^3",["4x^3","x^3","3x^4","4x^4"],"べき乗の微分公式を使おう。","(x^4)′＝4x^3。"],["f(x)=x^5 の導関数は？","5x^4",["5x^4","x^4","4x^5","5x^5"],"べき乗の微分公式を使おう。","(x^5)′＝5x^4。"],["f(x)=x^6 の導関数は？","6x^5",["6x^5","x^5","5x^6","6x^6"],"べき乗の微分公式を使おう。","(x^6)′＝6x^5。"],["f(x)=x^7 の導関数は？","7x^6",["7x^6","x^6","6x^7","7x^7"],"べき乗の微分公式を使おう。","(x^7)′＝7x^6。"],["∫ 2x dx は？","1x²＋C",["1x²＋C","2x²＋C","2＋C","2x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫2x dx＝1x²＋C。"],["∫ 3x dx は？","1.5x²＋C",["1.5x²＋C","3x²＋C","3＋C","3x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫3x dx＝1.5x²＋C。"],["∫ 4x dx は？","2x²＋C",["2x²＋C","4x²＋C","4＋C","4x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫4x dx＝2x²＋C。"],["∫ 5x dx は？","2.5x²＋C",["2.5x²＋C","5x²＋C","5＋C","5x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫5x dx＝2.5x²＋C。"],["∫ 6x dx は？","3x²＋C",["3x²＋C","6x²＋C","6＋C","6x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫6x dx＝3x²＋C。"],["∫ 7x dx は？","3.5x²＋C",["3.5x²＋C","7x²＋C","7＋C","7x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫7x dx＝3.5x²＋C。"],["lim(x→0) (sin x)/x の値は？（xはラジアン）","1",["1","0","−1","存在しない"],"基本極限を思い出そう。","lim(x→0) sin x/x＝1。"],["(ln x)′ は？","1/x",["1/x","x","ln x","e^x"],"自然対数の微分公式。","(ln x)′＝1/x。"],["(cos x)′ は？","−sin x",["−sin x","sin x","−cos x","tan x"],"三角関数の微分公式。","(cos x)′＝−sin x。"],["(sin x)′ は？","cos x",["cos x","−cos x","sin x","−sin x"],"三角関数の微分公式。","(sin x)′＝cos x。"],["∫ x² dx は？","x³/3＋C",["x³/3＋C","2x＋C","x³＋C","x²/2＋C"],"次数を1つ上げて3で割る。","∫x²dx＝x³/3＋C。"],["∫ cos x dx は？","sin x＋C",["sin x＋C","−sin x＋C","cos x＋C","−cos x＋C"],"微分するとcos xになる関数。","∫cos x dx＝sin x＋C。"],["(3x²＋2x)′ は？","6x＋2",["6x＋2","3x＋2","6x²＋2","6x＋1"],"項ごとに微分しよう。","(3x²)′＝6x、(2x)′＝2。"],["∫ 1 dx は？","x＋C",["x＋C","1＋C","x²＋C","0＋C"],"微分すると1になる関数。","∫1dx＝x＋C。"],["lim(x→∞) 1/x の値は？","0",["0","1","∞","存在しない"],"分母が大きくなると考えよう。","xが無限大に向かうと1/xは0に近づく。"],["(√x)′ は？","1/(2√x)",["1/(2√x)","√x/2","2√x","1/√x"],"√x＝x^(1/2)として微分。","(x^(1/2))′＝(1/2)x^(−1/2)。"],["∫ 3x² dx は？","x³＋C",["x³＋C","6x＋C","3x³＋C","x²＋C"],"x³を微分すると3x²。","∫3x²dx＝x³＋C。"],["(e^{2x})′ は？","2e^{2x}",["2e^{2x}","e^{2x}","2xe^{2x}","e^x"],"合成関数の微分で内側の微分を掛ける。","(e^{2x})′＝2e^{2x}。"],["∫ 1/x² dx は？","−1/x＋C",["−1/x＋C","1/x＋C","log|x|＋C","−1/x²＋C"],"x^(−2)として積分しよう。","∫x^(−2)dx＝−x^(−1)＋C。"],["(x³＋4x)′ は？","3x²＋4",["3x²＋4","x²＋4","3x＋4","3x²＋1"],"項ごとに微分しよう。","(x³)′＝3x²、(4x)′＝4。"],["∫ 2x³ dx は？","x⁴/2＋C",["x⁴/2＋C","6x²＋C","2x⁴＋C","x³/2＋C"],"次数を1つ上げて4で割る。","2×x⁴/4＝x⁴/2＋C。"],["(tan x)′ は？","1/cos²x",["1/cos²x","cos x","−sin x","1/sin²x"],"正接の微分公式。","(tan x)′＝1/cos²x。"],["f(x)=x²−4x の極値をとるx座標は？","2",["2","−2","4","−4"],"導関数を0とおこう。","f′(x)=2x−4＝0よりx＝2。"],["∫ 4x³ dx は？","x⁴＋C",["x⁴＋C","12x²＋C","4x⁴＋C","x³＋C"],"x⁴を微分すると4x³。","∫4x³dx＝x⁴＋C。"]]);
 
+
+// v5: 学校段階別に100問ずつ追加。全問に解答・選択肢・ヒント・解説を付ける。
+const addedCounts={elementary:0,junior:0,high1:0,high2:0,high3:0};
+function addGenerated(group,subject,question,answer,wrong,hint,explanation,difficulty){
+ const a=String(answer), opts=[a,...wrong.map(String)].filter((x,i,arr)=>arr.indexOf(x)===i);
+ if(opts.length<4)throw Error("選択肢不足: "+question);
+ const entry=[question,a,opts,hint,explanation];
+ entry.grade=group;entry.difficulty=difficulty;
+ bank[subject].push(entry);addedCounts[group]++;
+}
+for(let i=0;i<100;i++){
+ const tier=i%3===0?"basic":i%3===1?"standard":"advanced";
+ const a=12+i,b=3+i%17;
+ if(i%5===0){const v=a*b;addGenerated("elementary","elem",`${a}×${b} はいくつ？`,v,[v+a,v-b,v+b],"かけ算を計算しよう。",`${a}×${b}＝${v}。`,tier);}
+ else if(i%5===1){const v=a+b;addGenerated("elementary","elem",`${a}＋${b} はいくつ？`,v,[v+1,v-1,a-b],"位をそろえて足そう。",`${a}＋${b}＝${v}。`,tier);}
+ else if(i%5===2){const v=a*b;addGenerated("elementary","elem",`${v}÷${b} はいくつ？`,a,[a+1,a-1,b],"わり算をかけ算に直そう。",`${b}×${a}＝${v}なので答えは${a}。`,tier);}
+ else if(i%5===3){const v=a*b;addGenerated("elementary","elem",`たて${a}cm、横${b}cmの長方形の面積は？`,`${v}cm²`,[`${2*(a+b)}cm²`,`${a+b}cm²`,`${v+ b}cm²`],"面積はたて×横。",`${a}×${b}＝${v}cm²。`,tier);}
+ else {const v=a*5;addGenerated("elementary","elem",`${a}個のあめを5倍にすると何個？`,`${v}個`,[`${a+5}個`,`${v+5}個`,`${v-5}個`],"個数を5倍しよう。",`${a}×5＝${v}個。`,tier);}
+}
+for(let i=0;i<100;i++){
+ const tier=i%3===0?"basic":i%3===1?"standard":"advanced",a=2+i%19,b=3+Math.floor(i/5);
+ if(i%5===0){const v=a+b;addGenerated("junior","junior",`x＋${b}＝${v} の解は？`,`x＝${a}`,[`x＝${a+1}`,`x＝${a-1}`,`x＝${v}`],"両辺から同じ数を引こう。",`x＝${v}−${b}＝${a}。`,tier);}
+ else if(i%5===1){const v=a*b;addGenerated("junior","junior",`${b}x＝${v} の解は？`,`x＝${a}`,[`x＝${a+1}`,`x＝${b}`,`x＝${v}`],"両辺を係数で割ろう。",`x＝${v}÷${b}＝${a}。`,tier);}
+ else if(i%5===2){const v=a*a;addGenerated("junior","junior",`x＝−${a} のとき x² は？`,v,[-v,a,2*a],"負の数を二乗すると正になる。",`(−${a})²＝${v}。`,tier);}
+ else if(i%5===3){const v=180-a-b;addGenerated("junior","junior",`三角形の2角が${a}°と${b}°。残りの角は？`,`${v}°`,[`${v+10}°`,`${v-10}°`,`${a+b}°`],"三角形の内角の和は180°。",`180−${a}−${b}＝${v}°。`,tier);}
+ else {const v=2*a+b;addGenerated("junior","junior",`一次関数 y＝2x＋${b} で x＝${a} のとき y は？`,v,[v+2,v-2,a+b],"xに数値を代入しよう。",`2×${a}＋${b}＝${v}。`,tier);}
+}
+for(let i=0;i<100;i++){
+ const tier=i%3===0?"basic":i%3===1?"standard":"advanced",a=2+i%17,b=1+Math.floor(i/7);
+ if(i%5===0){addGenerated("high1","math1",`(x＋${a})(x＋${b}) の定数項は？`,a*b,[a+b,a*b+1,a*b+a],"定数項どうしをかけよう。",`${a}×${b}＝${a*b}。`,tier);}
+ else if(i%5===1){addGenerated("high1","math1",`y＝(x−${a})²＋${b} の頂点のx座標は？`,a,[-a,b,2*a],"頂点形式を確認しよう。",`頂点は(${a}, ${b})。`,tier);}
+ else if(i%5===2){addGenerated("high1","math1",`x²−${a*a} を因数分解したとき、正の定数を含む因数は？`,`x＋${a}`,[`x−${a}`,`x＋${a*a}`,`x−${a*a}`],"平方の差を使おう。",`(x−${a})(x＋${a})。`,tier);}
+ else if(i%5===3){const n=a+b;addGenerated("high1","mathA",`${n}人から委員長を1人選ぶ方法は何通り？`,n,[n-1,n+1,n*2],"1人を選ぶ方法は人数と同じ。",`${n}通り。`,tier);}
+ else {const n=a+3;addGenerated("high1","mathA",`${n}枚の異なるカードから1枚選ぶ方法は何通り？`,n,[n-1,n+1,n*2],"どのカードも1通りずつ。",`${n}通り。`,tier);}
+}
+for(let i=0;i<100;i++){
+ const tier=i%3===0?"basic":i%3===1?"standard":"advanced",a=2+i%17,b=2+Math.floor(i/9);
+ if(i%5===0){addGenerated("high2","math2",`log₂(2^${a}) の値は？`,a,[a-1,a+1,2*a],"対数と指数は逆の関係。",`log₂(2^${a})＝${a}。`,tier);}
+ else if(i%5===1){addGenerated("high2","math2",`f(x)＝${a}x² の導関数は？`,`${2*a}x`,[`${a}x`,`${a}x²`,`${2*a}x²`],"x²の微分は2x。",`f'(x)＝${2*a}x。`,tier);}
+ else if(i%5===2){addGenerated("high2","math2",`∫${a}x dx は？`,`${a}/2 x²＋C`,[`${a}x²＋C`,`${a}x＋C`,`${2*a}x²＋C`],"xの積分はx²/2。",`∫${a}x dx＝${a}/2 x²＋C。`,tier);}
+ else if(i%5===3){const v=a+(b-1)*2;addGenerated("high2","mathB",`初項${a}、公差2の等差数列の第${b}項は？`,v,[v-2,v+2,a+2*b],"aₙ＝a₁＋(n−1)d。",`${a}＋(${b}−1)×2＝${v}。`,tier);}
+ else {const v=a*b;addGenerated("high2","mathB",`初項${a}、公差${b}の等差数列の第2項は？`,a+b,[a*b,a+b+1,a-b],"第2項は初項＋公差。",`${a}＋${b}＝${a+b}。`,tier);}
+}
+for(let i=0;i<100;i++){
+ const tier=i%3===0?"basic":i%3===1?"standard":"advanced",a=2+i%17,b=1+Math.floor(i/8);
+ if(i%5===0){addGenerated("high3","math3",`f(x)＝x^${a} の導関数のxの指数は？`,a-1,[a,a+1,a-2],"べき乗の微分は指数が1下がる。",`f'(x)＝${a}x^${a-1}。`,tier);}
+ else if(i%5===1){addGenerated("high3","math3",`f(x)＝${a}x³ の導関数の係数は？`,3*a,[a,2*a,4*a],"x³を微分すると3x²。",`f'(x)＝${3*a}x²。`,tier);}
+ else if(i%5===2){addGenerated("high3","math3",`∫${2*a}x dx のx²の係数は？`,a,[2*a,a+1,a-1],"積分では指数を1増やして割る。",`∫${2*a}x dx＝${a}x²＋C。`,tier);}
+ else if(i%5===3){addGenerated("high3","mathC",`ベクトル(${a},${b})と(${b},${a})の和の第1成分は？`,a+b,[a-b,a*b,a+b+1],"対応する成分を足そう。",`${a}＋${b}＝${a+b}。`,tier);}
+ else {addGenerated("high3","mathC",`ベクトル(${a},${b})と(1,0)の内積は？`,a,[b,a+b,a*b],"対応成分の積の和。",`${a}×1＋${b}×0＝${a}。`,tier);}
+}
+console.assert(Object.values(addedCounts).every(n=>n===100),"追加問題数が不正",addedCounts);
+
 // 各エリアに複数のモンスターを用意。ルートによって遭遇する敵が変わる。
 const monsterPools={
   0:[{name:"スライム",icon:"🟢"},{name:"野ネズミの群れ",icon:"🐀"},{name:"ゴブリン見習い",icon:"👺"}],
@@ -358,7 +416,13 @@ function chooseQuestion(){
  let scopes=getScope(),pool=[];
  scopes.forEach(s=>(bank[s]||[]).forEach(q=>pool.push({...q,scope:s})));
  if(!pool.length){pool=bank.junior.map(q=>({...q,scope:"junior"}))}
- let q=pool[Math.floor(Math.random()*pool.length)];
+ const filtered=pool.filter(q=>!q.difficulty || state.difficulty==="mixed" || q.difficulty===state.difficulty);
+ if(filtered.length)pool=filtered;
+ if(!state.usedQuestions)state.usedQuestions=[];
+ let remaining=pool.filter(q=>!state.usedQuestions.includes(q.scope+":"+q[0]));
+ if(!remaining.length){state.usedQuestions=[];remaining=pool;}
+ let q=remaining[Math.floor(Math.random()*remaining.length)];
+ state.usedQuestions.push(q.scope+":"+q[0]);
  let diff=state.difficulty==="mixed"?["basic","standard","advanced"][Math.floor(Math.random()*3)]:state.difficulty;
  // Scale challenge by difficulty without changing the underlying topic.
  if(diff==="advanced" && q.scope==="elem") { /* elementary questions remain accessible */ }
@@ -467,7 +531,7 @@ function answer(ans,timedOut=false){
    state.kills++;state.gold+=10;fb.innerHTML+="<br>🏆 "+state.currentEnemy.name+"を倒した！ ボーナス10G！";
    addLog(state.currentEnemy.name+"を倒した！");
    if(state.place===5){
-    $("battle").classList.add("hidden");$("routeChoices").classList.add("hidden");$("endBox").classList.remove("hidden");addLog("魔王ディアボロスを倒し、世界に光が戻った！");
+    $("battle").classList.add("hidden");$("routeChoices").classList.add("hidden");$("endBox").classList.remove("hidden");syncVictorySettings();addLog("魔王ディアボロスを倒し、世界に光が戻った！");
    }else{
     $("answerArea").innerHTML="";$("nextBtn").classList.add("hidden");showRouteChoices();
    }
@@ -502,10 +566,22 @@ $("saveBtn").addEventListener("click",()=>save(true));
 $("loadBtn").addEventListener("click",()=>load(true));
 $("continueBtn").addEventListener("click",()=>load(true));
 $("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
-$("againBtn").addEventListener("click",()=>{stopTimer();state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;state.hp=state.maxHp;state.kills=0;state.gameOver=false;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");$("battle").classList.remove("hidden");render();startBattle()});
+function syncVictorySettings(){
+ $("victoryScope").innerHTML=$("scope").innerHTML;
+ $("victoryDifficulty").innerHTML=$("difficulty").innerHTML;
+ $("victoryScope").value=state.scope;
+ $("victoryDifficulty").value=state.difficulty;
+}
+$("againBtn").addEventListener("click",()=>{
+ state.scope=$("victoryScope").value;
+ state.difficulty=$("victoryDifficulty").value;
+ $("scope").value=state.scope;$("difficulty").value=state.difficulty;
+ state.usedQuestions=[];
+ stopTimer();state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;state.hp=state.maxHp;state.kills=0;state.gameOver=false;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");$("battle").classList.remove("hidden");render();startBattle()});
 function save(show){try{localStorage.setItem("mathRpgSave",JSON.stringify(state));if(show)alert("冒険をセーブしました！");}catch(e){if(show)alert("保存できませんでした。ブラウザの保存設定を確認してください。")}}
 function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};if(!state.route)state.route="meadow";if(!Array.isArray(state.routeHistory))state.routeHistory=[];if(!state.currentEnemy&&state.started){state.enemyHp=1;state.enemyMax=1;}$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
 render();
+if(!$("endBox").classList.contains("hidden"))syncVictorySettings();
 </script>
 </body>
 </html>
