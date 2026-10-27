@@ -80,6 +80,11 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
   </div>
   <div id="battle" class="hidden" style="margin-top:14px">
     <h2 id="battleTitle">モンスターが現れた！</h2>
+    <div id="routeChoices" class="hidden feedback" style="background:#203c46;border:1px solid #ffd166;margin:12px 0">
+      <b id="routeTitle">次の道を選ぼう</b>
+      <p id="routeDescription" class="small">どちらの道を進む？</p>
+      <div id="routeButtons" class="row"></div>
+    </div>
     <div class="timerline"><span id="timerText">残り時間：30秒</span><div class="timertrack"><span id="timerBar"></span></div></div>
     <div id="question" class="question"></div>
     <div id="answerArea"></div>
@@ -114,7 +119,7 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
   <div id="log" class="small">冒険を始めると、ここに記録が表示されます。</div>
   <hr>
   <h2>あそびかた</h2>
-  <p class="small">① 出題範囲と難易度を選ぶ<br>② モンスターの問題に答える（敵のHPは引き継がれる）<br>③ 正解して敵にダメージを与え、経験値とゴールドを獲得<br>④ レベルを上げて次のエリアへ！</p>
+  <p class="small">① 出題範囲と難易度を選ぶ<br>② 問題に正解してモンスターを倒す<br>③ 倒したらルートを選ぶ。道によって出会う敵が変わる<br>④ 最後の魔王ディアボロスを倒して世界を救おう！</p>
   <p class="small">不正解や時間切れではHPが8減ります。HPが0になるとゲームオーバーです。ゴールドで回復薬や強化アイテムを購入しましょう。</p>
 </aside>
 </div>
@@ -277,9 +282,23 @@ bank.mathB.push(...[["初項2、公差3の等差数列の第6項は？","17",["1
 bank.mathC.push(...[["ベクトル a=(1,2)、b=(3,4) の a＋b は？","(4,6)",["(4,6)","(-2,-2)","(3,8)","(4,-2)"],"対応する成分どうしを足そう。","(1+3,2+4)＝(4,6)。"],["ベクトル a=(2,3)、b=(1,5) の a＋b は？","(3,8)",["(3,8)","(1,-2)","(2,15)","(3,-2)"],"対応する成分どうしを足そう。","(2+1,3+5)＝(3,8)。"],["ベクトル a=(4,1)、b=(2,6) の a＋b は？","(6,7)",["(6,7)","(2,-5)","(8,6)","(6,-5)"],"対応する成分どうしを足そう。","(4+2,1+6)＝(6,7)。"],["ベクトル a=(3,5)、b=(2,1) の a＋b は？","(5,6)",["(5,6)","(1,4)","(6,5)","(5,4)"],"対応する成分どうしを足そう。","(3+2,5+1)＝(5,6)。"],["ベクトル a=(6,2)、b=(3,4) の a＋b は？","(9,6)",["(9,6)","(3,-2)","(18,8)","(9,-2)"],"対応する成分どうしを足そう。","(6+3,2+4)＝(9,6)。"],["ベクトル a=(0,7)、b=(5,2) の a＋b は？","(5,9)",["(5,9)","(-5,5)","(0,14)","(5,5)"],"対応する成分どうしを足そう。","(0+5,7+2)＝(5,9)。"],["点(0,0)と点(1,1)の距離は？","√2",["√2","2","0","1"],"距離の公式を使おう。","距離＝√(1²＋1²)＝√2。"],["点(0,0)と点(2,3)の距離は？","√13",["√13","5","1","6"],"距離の公式を使おう。","距離＝√(2²＋3²)＝√13。"],["点(0,0)と点(3,4)の距離は？","5",["5","7","1","12"],"距離の公式を使おう。","距離＝√(3²＋4²)＝5。"],["点(0,0)と点(4,3)の距離は？","5",["5","7","1","12"],"距離の公式を使おう。","距離＝√(4²＋3²)＝5。"],["点(0,0)と点(5,12)の距離は？","13",["13","17","7","60"],"距離の公式を使おう。","距離＝√(5²＋12²)＝13。"],["点(0,0)と点(8,6)の距離は？","10",["10","14","2","48"],"距離の公式を使おう。","距離＝√(8²＋6²)＝10。"],["複素数 i の二乗 i² は？","−1",["−1","1","i","−i"],"虚数単位の定義を思い出そう。","i²＝−1。"],["複素数 3＋2i の実部は？","3",["3","2","i","−3"],"iの付かない部分が実部。","実部は3。"],["複素数 3＋2i の虚部は？","2",["2","3","i","−2"],"iの係数が虚部。","虚部は2。"],["点(2,−3)を原点について対称移動した点は？","(−2,3)",["(−2,3)","(2,3)","(−2,−3)","(3,−2)"],"両方の座標の符号を変える。","(x,y)→(−x,−y)。"],["円 x²＋y²＝25 の半径は？","5",["5","25","10","√10"],"標準形 x²＋y²＝r²。","r²＝25よりr＝5。"],["放物線 y＝x² の頂点は？","(0,0)",["(0,0)","(1,0)","(0,1)","(−1,0)"],"基本形の頂点を考えよう。","頂点は原点。"],["ベクトル (1,2) と (3,4) の内積は？","11",["11","7","10","14"],"対応成分を掛けて足す。","1×3＋2×4＝11。"],["複素数 (2＋i)＋(3＋4i) は？","5＋5i",["5＋5i","5＋4i","6＋5i","5＋3i"],"実部どうし、虚部どうしを足す。","(2＋3)+(1＋4)i＝5＋5i。"],["楕円 x²/9＋y²/4＝1 の長半径は？","3",["3","2","4","9"],"分母の大きい方の平方根。","√9＝3。"],["双曲線 x²/16−y²/9＝1 の a は？","4",["4","3","9","16"],"標準形のa²を読む。","a²＝16よりa＝4。"],["ベクトル (2,0) と (0,3) の内積は？","0",["0","5","6","−6"],"対応する成分を掛けて足す。","2×0＋0×3＝0。"],["複素数 4−3i の共役複素数は？","4＋3i",["4＋3i","−4＋3i","4−3i","−4−3i"],"虚部の符号を反転する。","共役複素数は4＋3i。"],["点(1,2)をx軸について対称移動した点は？","(1,−2)",["(1,−2)","(−1,2)","(−1,−2)","(2,1)"],"x座標はそのまま、y座標の符号を変える。","(x,y)→(x,−y)。"],["ベクトル (3,0) の大きさは？","3",["3","0","9","√3"],"大きさは原点からの距離。","√(3²＋0²)＝3。"],["円 x²＋y²＝49 の中心は？","(0,0)",["(0,0)","(7,0)","(0,7)","(7,7)"],"この形の円の中心は原点。","中心は(0,0)。"],["複素数 i⁴ は？","1",["1","−1","i","−i"],"i²＝−1を使おう。","i⁴＝(i²)²＝1。"],["ベクトル (1,0) と (0,1) は垂直？","垂直",["垂直","平行","同じ向き","判定できない"],"内積が0なら垂直。","内積は0なので垂直。"],["点(−2,5)のx座標は？","−2",["−2","2","5","−5"],"順序対は(x,y)。","x座標は−2。"]]);
 bank.math3.push(...[["f(x)=x^2 の導関数は？","2x",["2x","x","x^2","2x^2"],"べき乗の微分公式を使おう。","(x^2)′＝2x。"],["f(x)=x^3 の導関数は？","3x^2",["3x^2","x^2","2x^3","3x^3"],"べき乗の微分公式を使おう。","(x^3)′＝3x^2。"],["f(x)=x^4 の導関数は？","4x^3",["4x^3","x^3","3x^4","4x^4"],"べき乗の微分公式を使おう。","(x^4)′＝4x^3。"],["f(x)=x^5 の導関数は？","5x^4",["5x^4","x^4","4x^5","5x^5"],"べき乗の微分公式を使おう。","(x^5)′＝5x^4。"],["f(x)=x^6 の導関数は？","6x^5",["6x^5","x^5","5x^6","6x^6"],"べき乗の微分公式を使おう。","(x^6)′＝6x^5。"],["f(x)=x^7 の導関数は？","7x^6",["7x^6","x^6","6x^7","7x^7"],"べき乗の微分公式を使おう。","(x^7)′＝7x^6。"],["∫ 2x dx は？","1x²＋C",["1x²＋C","2x²＋C","2＋C","2x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫2x dx＝1x²＋C。"],["∫ 3x dx は？","1.5x²＋C",["1.5x²＋C","3x²＋C","3＋C","3x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫3x dx＝1.5x²＋C。"],["∫ 4x dx は？","2x²＋C",["2x²＋C","4x²＋C","4＋C","4x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫4x dx＝2x²＋C。"],["∫ 5x dx は？","2.5x²＋C",["2.5x²＋C","5x²＋C","5＋C","5x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫5x dx＝2.5x²＋C。"],["∫ 6x dx は？","3x²＋C",["3x²＋C","6x²＋C","6＋C","6x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫6x dx＝3x²＋C。"],["∫ 7x dx は？","3.5x²＋C",["3.5x²＋C","7x²＋C","7＋C","7x＋C"],"xの次数を1つ上げ、指数で割ろう。","∫7x dx＝3.5x²＋C。"],["lim(x→0) (sin x)/x の値は？（xはラジアン）","1",["1","0","−1","存在しない"],"基本極限を思い出そう。","lim(x→0) sin x/x＝1。"],["(ln x)′ は？","1/x",["1/x","x","ln x","e^x"],"自然対数の微分公式。","(ln x)′＝1/x。"],["(cos x)′ は？","−sin x",["−sin x","sin x","−cos x","tan x"],"三角関数の微分公式。","(cos x)′＝−sin x。"],["(sin x)′ は？","cos x",["cos x","−cos x","sin x","−sin x"],"三角関数の微分公式。","(sin x)′＝cos x。"],["∫ x² dx は？","x³/3＋C",["x³/3＋C","2x＋C","x³＋C","x²/2＋C"],"次数を1つ上げて3で割る。","∫x²dx＝x³/3＋C。"],["∫ cos x dx は？","sin x＋C",["sin x＋C","−sin x＋C","cos x＋C","−cos x＋C"],"微分するとcos xになる関数。","∫cos x dx＝sin x＋C。"],["(3x²＋2x)′ は？","6x＋2",["6x＋2","3x＋2","6x²＋2","6x＋1"],"項ごとに微分しよう。","(3x²)′＝6x、(2x)′＝2。"],["∫ 1 dx は？","x＋C",["x＋C","1＋C","x²＋C","0＋C"],"微分すると1になる関数。","∫1dx＝x＋C。"],["lim(x→∞) 1/x の値は？","0",["0","1","∞","存在しない"],"分母が大きくなると考えよう。","xが無限大に向かうと1/xは0に近づく。"],["(√x)′ は？","1/(2√x)",["1/(2√x)","√x/2","2√x","1/√x"],"√x＝x^(1/2)として微分。","(x^(1/2))′＝(1/2)x^(−1/2)。"],["∫ 3x² dx は？","x³＋C",["x³＋C","6x＋C","3x³＋C","x²＋C"],"x³を微分すると3x²。","∫3x²dx＝x³＋C。"],["(e^{2x})′ は？","2e^{2x}",["2e^{2x}","e^{2x}","2xe^{2x}","e^x"],"合成関数の微分で内側の微分を掛ける。","(e^{2x})′＝2e^{2x}。"],["∫ 1/x² dx は？","−1/x＋C",["−1/x＋C","1/x＋C","log|x|＋C","−1/x²＋C"],"x^(−2)として積分しよう。","∫x^(−2)dx＝−x^(−1)＋C。"],["(x³＋4x)′ は？","3x²＋4",["3x²＋4","x²＋4","3x＋4","3x²＋1"],"項ごとに微分しよう。","(x³)′＝3x²、(4x)′＝4。"],["∫ 2x³ dx は？","x⁴/2＋C",["x⁴/2＋C","6x²＋C","2x⁴＋C","x³/2＋C"],"次数を1つ上げて4で割る。","2×x⁴/4＝x⁴/2＋C。"],["(tan x)′ は？","1/cos²x",["1/cos²x","cos x","−sin x","1/sin²x"],"正接の微分公式。","(tan x)′＝1/cos²x。"],["f(x)=x²−4x の極値をとるx座標は？","2",["2","−2","4","−4"],"導関数を0とおこう。","f′(x)=2x−4＝0よりx＝2。"],["∫ 4x³ dx は？","x⁴＋C",["x⁴＋C","12x²＋C","4x⁴＋C","x³＋C"],"x⁴を微分すると4x³。","∫4x³dx＝x⁴＋C。"]]);
 
-const enemyNames=["スライム","森のゴブリン","洞窟コウモリ","魔法使い","闇の騎士","封印の魔竜"];
-const enemyIcons=["🟢","👺","🦇","🧙‍♂️","🛡️","🐉"];
-let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
+// 各エリアに複数のモンスターを用意。ルートによって遭遇する敵が変わる。
+const monsterPools={
+  0:[{name:"スライム",icon:"🟢"},{name:"野ネズミの群れ",icon:"🐀"},{name:"ゴブリン見習い",icon:"👺"}],
+  1:{meadow:[{name:"ホーンラビット",icon:"🐇"},{name:"スライム",icon:"🟢"},{name:"ゴブリン斥候",icon:"👺"}],swamp:[{name:"沼の毒ガエル",icon:"🐸"},{name:"毒スライム",icon:"🟣"},{name:"沼地のコウモリ",icon:"🦇"}]},
+  2:{forest:[{name:"森のゴブリン",icon:"👺"},{name:"巨大ハチ",icon:"🐝"},{name:"歩く樹木",icon:"🌳"}],mountain:[{name:"岩トカゲ",icon:"🦎"},{name:"山賊",icon:"🥷"},{name:"石のゴーレム",icon:"🪨"}]},
+  3:{cave:[{name:"洞窟コウモリ",icon:"🦇"},{name:"岩のゴーレム",icon:"🪨"},{name:"闇の魔法使い",icon:"🧙"}],ruins:[{name:"古代の番兵",icon:"🗿"},{name:"呪いの人形",icon:"🪆"},{name:"亡霊",icon:"👻"}]},
+  4:{gate:[{name:"闇の騎士",icon:"🛡️"},{name:"地獄の番犬",icon:"🐺"},{name:"影の暗殺者",icon:"🥷"}],underpass:[{name:"骸骨兵士",icon:"💀"},{name:"呪われた鎧",icon:"⚔️"},{name:"深淵の魔物",icon:"👹"}]},
+  5:[{name:"魔王ディアボロス",icon:"👿",boss:true}]
+};
+const routeOptions={
+  0:[{key:"meadow",label:"🌾 草原ルート",desc:"見通しのよい草原を進む"},{key:"swamp",label:"🐸 沼地ルート",desc:"危険だが珍しい敵が潜む沼を進む"}],
+  1:[{key:"forest",label:"🌲 森ルート",desc:"木々の間を抜ける道"},{key:"mountain",label:"⛰️ 山道ルート",desc:"険しい山道を越える道"}],
+  2:[{key:"cave",label:"🪨 洞窟ルート",desc:"暗い洞窟の奥へ進む"},{key:"ruins",label:"🏛️ 遺跡ルート",desc:"古代の遺跡を調べながら進む"}],
+  3:[{key:"gate",label:"🏰 城門ルート",desc:"闇の騎士が守る正面の道"},{key:"underpass",label:"🕳️ 地下通路ルート",desc:"城の地下に続く危険な通路"}],
+  4:[{key:"finalgate",label:"⚔️ 正門から魔王の間へ",desc:"正面から魔王に挑む"},{key:"finalhall",label:"🔮 封印の回廊から魔王の間へ",desc:"封印の力が残る回廊を抜ける"}]
+};
+let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
 function addLog(t){state.log.unshift(t);state.log=state.log.slice(0,7);renderLog()}
 function renderLog(){$("log").innerHTML=state.log.length?state.log.map(x=>"• "+escapeHtml(x)).join("<br>"):"冒険を始めると、ここに記録が表示されます。"}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -289,7 +308,7 @@ function render(){
  $("sceneTitle").textContent=state.started?places[state.place].name:"冒険の準備";
  $("sceneIcon").textContent=state.started?places[state.place].icon:"🧙";
  $("sceneText").textContent=state.started?places[state.place].desc:"冒険者よ、封印の力を取り戻そう！";
- $("map").innerHTML=places.map((p,i)=>`<div class="location ${state.started&&i===state.place?"current":""}">${p.icon} ${p.name}<small>${i<state.place?"踏破済み":i===state.place&&state.started?"現在地":i===0?"出発地点": "未踏の地"}</small></div>`).join("");
+ $("map").innerHTML=places.map((p,i)=>`<div class="location ${state.started&&i===state.place?"current":""}">${p.icon} ${p.name}<small>${i<state.place?"踏破済み":i===state.place&&state.started?"現在地":i===0?"出発地点":"未踏の地"}${i===state.place&&state.routeHistory.length?"<br>経路："+escapeHtml(state.routeHistory[state.routeHistory.length-1]):""}</small></div>`).join("");
  renderLog();
 }
 function xpNeed(){return 30+(state.level-1)*20}
@@ -305,7 +324,7 @@ function shopBuy(cost, message, action){
 }
 function triggerGameOver(){
  state.hp=0;state.gameOver=true;stopTimer();
- $("battle").classList.add("hidden");$("endBox").classList.add("hidden");
+ $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");
  $("gameOverBox").classList.remove("hidden");
  $("sceneTitle").textContent="世界は闇に覆われた";
  $("sceneIcon").textContent="🌑";
@@ -334,7 +353,7 @@ function chooseQuestion(){
 }
 function begin(){
  state.name=$("heroName").value.trim()||"数学勇者";state.scope=$("scope").value;state.difficulty=$("difficulty").value;state.started=true;
- $("setup").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");state.gameOver=false;$("battle").classList.remove("hidden");
+ $("setup").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("routeChoices").classList.add("hidden");state.gameOver=false;state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;$("battle").classList.remove("hidden");
  addLog(state.name+"は冒険に出発した！");render();startBattle();
 }
 
@@ -381,13 +400,38 @@ function startTimer(){
  },1000);
 }
 
+function chooseMonster(){
+ const source=monsterPools[state.place];
+ let pool=Array.isArray(source)?source:(source[state.route]||[]);
+ if(!Array.isArray(pool)||!pool.length)pool=[{name:"闇の魔物",icon:"👾"}];
+ return pool[Math.floor(Math.random()*pool.length)];
+}
+function showRouteChoices(){
+ const options=routeOptions[state.place]||[];
+ $("routeChoices").classList.remove("hidden");
+ $("routeTitle").textContent=state.place===4?"魔王の城へ進もう！":"次に進むルートを選ぼう！";
+ $("routeDescription").textContent=state.place===4?"どちらを選んでも、最後は魔王ディアボロスとの決戦だ。":"選んだ道によって、次のエリアで出会うモンスターが変わる。";
+ $("routeButtons").innerHTML=options.map(o=>`<button class="choice" data-route="${o.key}" data-label="${escapeHtml(o.label)}">${o.label}<br><span class="small">${o.desc}</span></button>`).join("");
+ $("routeButtons").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>chooseRoute(b.dataset.route,b.dataset.label)));
+}
+function chooseRoute(key,label){
+ if(state.gameOver)return;
+ state.route=key;state.routeHistory.push(label.replace(/^[^ ]+ /,""));
+ addLog("ルート選択："+label);
+ state.place++;state.enemyHp=1;state.enemyMax=1;state.currentEnemy=null;
+ $("routeChoices").classList.add("hidden");$("battle").classList.remove("hidden");
+ render();startBattle();save(false);
+}
 function startBattle(){
  stopTimer();state.answered=false;state.question=chooseQuestion();
  if(state.enemyMax<=1 || state.enemyHp<=0){
-  state.enemyMax=8+state.place*8+state.level*2;
+  state.currentEnemy=chooseMonster();
+  const boss=!!state.currentEnemy.boss;
+  state.enemyMax=boss?95+state.level*8:8+state.place*8+state.level*2;
   state.enemyHp=state.enemyMax;
  }
- $("enemyBox").classList.remove("hidden");$("enemyIcon").textContent=enemyIcons[state.place];$("enemyName").textContent=enemyNames[state.place];$("battleTitle").textContent=enemyNames[state.place]+"が現れた！";
+ $("routeChoices").classList.add("hidden");
+ $("enemyBox").classList.remove("hidden");$("enemyIcon").textContent=state.currentEnemy.icon;$("enemyName").textContent=state.currentEnemy.name;$("battleTitle").textContent=state.currentEnemy.name+(state.currentEnemy.boss?"が立ちはだかった！":"が現れた！");
  $("enemyHpText").textContent=state.enemyHp+" / "+state.enemyMax+" HP";$("enemyHpBar").style.width=(Math.max(0,state.enemyHp)/state.enemyMax*100)+"%";
  $("question").textContent="【"+labels[state.question.scope]+"】 "+state.question[0];
  $("feedback").className="feedback hidden";$("hint").className="feedback hidden";$("hint").textContent="ヒント："+state.question[3];
@@ -407,9 +451,13 @@ function answer(ans,timedOut=false){
   addLog("正解！ "+labels[q.scope]+"の問題をクリア。");
   while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.maxHp+=5;state.hp=state.maxHp;addLog("レベルアップ！ Lv."+state.level+"になった。");}
   if(state.enemyHp<=0){
-   state.kills++;state.gold+=10;fb.innerHTML+="<br>🏆 "+enemyNames[state.place]+"を倒した！ ボーナス10G！";
-   if(state.place<places.length-1){state.place++;addLog(enemyNames[state.place-1]+"を倒し、"+places[state.place].name+"へ進んだ。");}
-   else {$("battle").classList.add("hidden");$("endBox").classList.remove("hidden");addLog("魔王の封印を解いた！");}
+   state.kills++;state.gold+=10;fb.innerHTML+="<br>🏆 "+state.currentEnemy.name+"を倒した！ ボーナス10G！";
+   addLog(state.currentEnemy.name+"を倒した！");
+   if(state.place===5){
+    $("battle").classList.add("hidden");$("routeChoices").classList.add("hidden");$("endBox").classList.remove("hidden");addLog("魔王ディアボロスを倒し、世界に光が戻った！");
+   }else{
+    $("answerArea").innerHTML="";$("nextBtn").classList.add("hidden");showRouteChoices();
+   }
   }
  }else{
   state.wrong++;
@@ -420,13 +468,12 @@ function answer(ans,timedOut=false){
   if(state.hp<=0){triggerGameOver();return;}
  }
  $("enemyHpText").textContent=state.enemyHp+" / "+state.enemyMax+" HP";$("enemyHpBar").style.width=(state.enemyHp/state.enemyMax*100)+"%";
- $("nextBtn").classList.remove("hidden");$("hintBtn").disabled=true;render();save(false);
+ if(state.enemyHp>0){$("nextBtn").classList.remove("hidden");}else{$("nextBtn").classList.add("hidden");}$("hintBtn").disabled=true;render();save(false);
 }
 $("startBtn").addEventListener("click",begin);
 $("hintBtn").addEventListener("click",()=>{$("hint").classList.remove("hidden");$("hintBtn").disabled=true});
 $("nextBtn").addEventListener("click",()=>{
- if(state.gameOver)return;
- if(state.kills>=places.length*3 && state.place<places.length-1)state.place++;
+ if(state.gameOver || state.enemyHp<=0)return;
  startBattle();
 });
 $("buyPotionBtn").addEventListener("click",()=>shopBuy(15,"回復薬を使い、HPが15回復した。",()=>{const before=state.hp;state.hp=Math.min(state.maxHp,state.hp+15);if(state.hp===before){state.gold+=15;$("shopMessage").textContent="HPは満タンです。ゴールドは返却しました。";}}));
@@ -435,16 +482,16 @@ $("buyPowerBtn").addEventListener("click",()=>shopBuy(40,"力の秘薬を使っ�
 $("buyGuardBtn").addEventListener("click",()=>shopBuy(35,"守りの護符を装備した。受けるダメージが2減る！",()=>{state.defenseBonus+=2;}));
 $("gameOverRestartBtn").addEventListener("click",()=>{
  stopTimer();localStorage.removeItem("mathRpgSave");
- state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
+ state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
  $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");$("enemyBox").classList.add("hidden");render();
 });
 $("saveBtn").addEventListener("click",()=>save(true));
 $("loadBtn").addEventListener("click",()=>load(true));
 $("continueBtn").addEventListener("click",()=>load(true));
-$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
-$("againBtn").addEventListener("click",()=>{stopTimer();state.place=0;state.hp=state.maxHp;state.kills=0;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("battle").classList.remove("hidden");startBattle()});
+$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
+$("againBtn").addEventListener("click",()=>{stopTimer();state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;state.hp=state.maxHp;state.kills=0;state.gameOver=false;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");$("battle").classList.remove("hidden");render();startBattle()});
 function save(show){try{localStorage.setItem("mathRpgSave",JSON.stringify(state));if(show)alert("冒険をセーブしました！");}catch(e){if(show)alert("保存できませんでした。ブラウザの保存設定を確認してください。")}}
-function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
+function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};if(!state.route)state.route="meadow";if(!Array.isArray(state.routeHistory))state.routeHistory=[];if(!state.currentEnemy&&state.started){state.enemyHp=1;state.enemyMax=1;}$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
 render();
 </script>
 </body>
