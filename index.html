@@ -323,17 +323,30 @@ function shopBuy(cost, message, action){
  save(false);
 }
 function triggerGameOver(){
- state.hp=0;state.gameOver=true;stopTimer();
+ // ゲームオーバー時は冒険の進行状況・成長・所持品効果をすべて初期化する。
+ // HPだけは0のままにし、ゲームオーバー画面を維持する。
+ stopTimer();
+ state.gameOver=true;
+ state.level=1;state.xp=0;state.gold=0;
+ state.maxHp=30;state.hp=0;
+ state.kills=0;state.place=0;state.route="meadow";state.routeHistory=[];
+ state.currentEnemy=null;state.attackBonus=0;state.defenseBonus=0;
+ state.enemyHp=1;state.enemyMax=1;
+ state.question=null;state.answered=false;
+ state.questionCount=0;state.correct=0;state.wrong=0;
+ state.log=[];
+ render();
  $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");
  $("gameOverBox").classList.remove("hidden");
  $("sceneTitle").textContent="世界は闇に覆われた";
  $("sceneIcon").textContent="🌑";
  $("sceneText").textContent="勇者は力尽き、魔王が世界を支配した……";
+ $("hpText").textContent="0 / "+state.maxHp;$("hpBar").style.width="0%";
  $("enemyBox").classList.add("hidden");
  $("nextBtn").classList.add("hidden");
  $("hintBtn").disabled=true;
  $("answerArea").innerHTML="";
- addLog("HPが0になった。世界は闇に覆われた……ゲームオーバー。");
+ addLog("HPが0になった。ゴールド・経験値・レベル・強化効果はすべて失われた。世界は闇に覆われた……ゲームオーバー。");
  save(false);
 }
 function getScope(){
