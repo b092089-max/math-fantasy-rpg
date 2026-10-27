@@ -478,10 +478,14 @@ function startTimer(){
 }
 
 function chooseMonster(){
+ // 勇者名が「トド」「とど」の場合のみ、全敵をトドに変える。
+ // ボス判定と強さは元の敵から引き継ぐ。
+ const todoMode = ["トド","とど"].includes(String(state.name||"").trim());
  const source=monsterPools[state.place];
  let pool=Array.isArray(source)?source:(source[state.route]||[]);
  if(!Array.isArray(pool)||!pool.length)pool=[{name:"闇の魔物",icon:"👾"}];
- return pool[Math.floor(Math.random()*pool.length)];
+ const monster=pool[Math.floor(Math.random()*pool.length)];
+ return todoMode ? {...monster,name:"トド",icon:"🦭"} : monster;
 }
 function showRouteChoices(){
  const options=routeOptions[state.place]||[];
