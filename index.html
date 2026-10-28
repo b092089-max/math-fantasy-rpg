@@ -112,8 +112,14 @@ footer{text-align:center;color:#9eb1ac;font-size:.78rem;padding:18px}
     <div class="stat">ゴールド<br><b id="gold">0 G</b></div><div class="stat">討伐数<br><b id="kills">0</b></div>
   </div>
   <hr>
-  <h2>🏪 道具屋</h2>
+  <h2>⚔️ 装備・育成</h2>
+  <div id="equipmentPanel"></div>
+  <h2>🌳 スキルツリー</h2><p id="skillPoints" class="small"></p><div id="skillPanel"></div>
+  <h2>✨ 数学魔法</h2><p id="magicStatus" class="small"></p><div id="magicPanel" class="row"></div>
+  <h2>📚 数学修行場</h2><p id="reviewStatus" class="small"></p><button id="reviewBtn" class="choice">間違えた問題を復習する</button><button id="reviewExitBtn" class="hidden">通常の冒険に戻る</button>
+  <hr><h2>🏪 道具屋</h2>
   <p class="small">冒険で手に入れたゴールドを使って、回復や強化ができます。</p>
+  <div id="equipmentShop"></div>
   <div class="shop-item"><div><b>🌿 回復薬</b><div class="shop-desc">HPを15回復する（15G）</div></div><button id="buyPotionBtn">15 G</button></div>
   <div class="shop-item"><div><b>💖 エリクサー</b><div class="shop-desc">HPを全回復する（30G）</div></div><button id="buyElixirBtn">30 G</button></div>
   <div class="shop-item"><div><b>💪 力の秘薬</b><div class="shop-desc">攻撃力が永続的に5上がる（40G）</div></div><button id="buyPowerBtn">40 G</button></div>
@@ -356,10 +362,32 @@ const routeOptions={
   3:[{key:"gate",label:"🏰 城門ルート",desc:"闇の騎士が守る正面の道"},{key:"underpass",label:"🕳️ 地下通路ルート",desc:"城の地下に続く危険な通路"}],
   4:[{key:"finalgate",label:"⚔️ 正門から魔王の間へ",desc:"正面から魔王に挑む"},{key:"finalhall",label:"🔮 封印の回廊から魔王の間へ",desc:"封印の力が残る回廊を抜ける"}]
 };
-let state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
+const initialState=()=>({name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[],skillPoints:0,skills:{},ownedEquipment:[],equipped:{weapon:null,armor:null},mana:0,streak:0,reviewMistakes:[],reviewMode:false,magicReady:null});
+let state=initialState();
 function addLog(t){state.log.unshift(t);state.log=state.log.slice(0,7);renderLog()}
 function renderLog(){$("log").innerHTML=state.log.length?state.log.map(x=>"• "+escapeHtml(x)).join("<br>"):"冒険を始めると、ここに記録が表示されます。"}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const equipment={
+ woodSword:{name:"🗡️ 木の剣",slot:"weapon",cost:20,atk:3},ironSword:{name:"⚔️ 鉄の剣",slot:"weapon",cost:75,atk:8},sageStaff:{name:"🪄 賢者の杖",slot:"weapon",cost:110,atk:5,mana:1},cloth:{name:"🧥 旅人の服",slot:"armor",cost:20,def:1},ironArmor:{name:"🛡️ 鉄の鎧",slot:"armor",cost:80,def:3},sageRobe:{name:"🥼 賢者のローブ",slot:"armor",cost:110,def:2,mana:1}};
+const skillTree={power:{name:"剣術",desc:"正解時の攻撃+3",max:3},guard:{name:"防御術",desc:"被ダメージ-1",max:3},focus:{name:"集中力",desc:"制限時間+5秒",max:2},wisdom:{name:"知恵",desc:"正解時の経験値+3",max:3},magic:{name:"魔力増幅",desc:"正解時のMP+1",max:2}};
+function initExtras(){state.skills??={};state.ownedEquipment??=[];state.equipped??={weapon:null,armor:null};state.reviewMistakes??=[];state.skillPoints??=0;state.mana??=0;state.streak??=0;state.reviewMode??=false;state.magicReady??=null;}
+function equippedBonus(key){return Object.values(state.equipped||{}).reduce((n,id)=>n+(equipment[id]?.[key]||0),0)}
+function skillLevel(id){return state.skills?.[id]||0}
+function renderExtras(){initExtras();
+ $("equipmentShop").innerHTML=Object.entries(equipment).map(([id,e])=>`<div class="shop-item"><div>${e.name}<div class="shop-desc">${e.atk?"攻撃+"+e.atk+" ":""}${e.def?"防御+"+e.def+" ":""}${e.mana?"MP獲得+"+e.mana:""} / ${e.cost}G</div></div><button data-buy="${id}" ${state.ownedEquipment.includes(id)?"disabled":""}>${state.ownedEquipment.includes(id)?"所持済み":"購入"}</button></div>`).join("");
+ $("equipmentShop").querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{const id=b.dataset.buy,e=equipment[id];if(!state.started||state.gameOver||state.gold<e.cost){$("shopMessage").textContent="冒険中に必要なゴールドを集めよう。";return}state.gold-=e.cost;state.ownedEquipment.push(id);state.equipped[e.slot]=id;addLog(e.name+"を購入・装備した！");render();save(false)});
+ $("equipmentPanel").innerHTML=["weapon","armor"].map(slot=>`<label>${slot==="weapon"?"武器":"防具"}</label><select data-slot="${slot}"><option value="">装備なし</option>${state.ownedEquipment.filter(id=>equipment[id]?.slot===slot).map(id=>`<option value="${id}" ${state.equipped[slot]===id?"selected":""}>${equipment[id].name}</option>`).join("")}</select>`).join("");
+ $("equipmentPanel").querySelectorAll("select").forEach(sel=>sel.onchange=()=>{state.equipped[sel.dataset.slot]=sel.value||null;render();save(false)});
+ $("skillPoints").textContent="残りスキルポイント："+state.skillPoints;
+ $("skillPanel").innerHTML=Object.entries(skillTree).map(([id,v])=>`<div class="shop-item"><div><b>${v.name} ${skillLevel(id)}/${v.max}</b><div class="shop-desc">${v.desc}</div></div><button data-skill="${id}" ${state.skillPoints<1||skillLevel(id)>=v.max?"disabled":""}>習得</button></div>`).join("");
+ $("skillPanel").querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>{const id=b.dataset.skill;if(state.skillPoints<1||skillLevel(id)>=skillTree[id].max)return;state.skillPoints--;state.skills[id]=skillLevel(id)+1;render();save(false)});
+ $("magicStatus").textContent=`MP ${state.mana}/10 ・連続正解 ${state.streak}回`;
+ $("magicPanel").innerHTML=`<button data-magic="fire" ${state.mana<4||!state.started||state.answered||state.reviewMode?"disabled":""}>🔥 ファイア（4MP・15ダメージ）</button><button data-magic="thunder" ${state.mana<8||state.streak<3||!state.started||state.answered||state.reviewMode?"disabled":""}>⚡ サンダー（8MP・30ダメージ／3連続正解）</button>`;
+ $("magicPanel").querySelectorAll("[data-magic]").forEach(b=>b.onclick=()=>{if(state.answered||state.reviewMode||!state.started)return;const thunder=b.dataset.magic==="thunder",cost=thunder?8:4;if(state.mana<cost||(thunder&&state.streak<3))return;state.mana-=cost;state.magicReady={name:thunder?"サンダー":"ファイア",damage:thunder?30:15};addLog(state.magicReady.name+"を詠唱！ 次の正解で発動する。");renderExtras();save(false)});
+ $("reviewStatus").textContent=`復習待ち：${state.reviewMistakes.length}問 ${state.reviewMode?"（修行中：正解するとリストから除外）":""}`;
+ $("reviewBtn").disabled=!state.started||state.gameOver||state.reviewMode||!state.reviewMistakes.length||!state.answered;
+ $("reviewExitBtn").classList.toggle("hidden",!state.reviewMode);
+}
 function render(){
  $("statName").textContent=state.name;$("level").textContent=state.level;$("xpText").textContent=state.xp+" / "+xpNeed();$("gold").textContent=state.gold+" G";$("kills").textContent=state.kills;$("hpText").textContent=state.hp+" / "+state.maxHp;
  $("hpBar").style.width=(state.hp/state.maxHp*100)+"%";$("xpBar").style.width=(state.xp/xpNeed()*100)+"%";
@@ -367,7 +395,7 @@ function render(){
  $("sceneIcon").textContent=state.started?places[state.place].icon:"🧙";
  $("sceneText").textContent=state.started?places[state.place].desc:"冒険者よ、封印の力を取り戻そう！";
  $("map").innerHTML=places.map((p,i)=>`<div class="location ${state.started&&i===state.place?"current":""}">${p.icon} ${p.name}<small>${i<state.place?"踏破済み":i===state.place&&state.started?"現在地":i===0?"出発地点":"未踏の地"}${i===state.place&&state.routeHistory.length?"<br>経路："+escapeHtml(state.routeHistory[state.routeHistory.length-1]):""}</small></div>`).join("");
- renderLog();
+ renderLog();renderExtras();
 }
 function xpNeed(){return 30+(state.level-1)*20}
 function shopBuy(cost, message, action){
@@ -392,7 +420,7 @@ function triggerGameOver(){
  state.enemyHp=1;state.enemyMax=1;
  state.question=null;state.answered=false;
  state.questionCount=0;state.correct=0;state.wrong=0;
- state.log=[];
+ state.log=[];state.skillPoints=0;state.skills={};state.ownedEquipment=[];state.equipped={weapon:null,armor:null};state.mana=0;state.streak=0;state.reviewMistakes=[];state.reviewMode=false;state.magicReady=null;
  render();
  $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");
  $("gameOverBox").classList.remove("hidden");
@@ -413,6 +441,7 @@ function getScope(){
  return state.scope==="all"?Object.keys(bank):[state.scope];
 }
 function chooseQuestion(){
+ if(state.reviewMode && state.reviewMistakes.length){const item=state.reviewMistakes[Math.floor(Math.random()*state.reviewMistakes.length)];return Object.assign([...item],{scope:item.scope,diff:item.diff||"standard",reviewKey:item.reviewKey});}
  let scopes=getScope(),pool=[];
  scopes.forEach(s=>(bank[s]||[]).forEach(q=>pool.push(Object.assign([...q],{scope:s,difficulty:q.difficulty}))));
  if(!pool.length){pool=bank.junior.map(q=>Object.assign([...q],{scope:"junior",difficulty:q.difficulty}))}
@@ -429,7 +458,7 @@ function chooseQuestion(){
  return Object.assign([...q],{scope:q.scope,diff});
 }
 function begin(){
- state.name=$("heroName").value.trim()||"数学勇者";state.scope=$("scope").value;state.difficulty=$("difficulty").value;state.started=true;
+ initExtras();state.name=$("heroName").value.trim()||"数学勇者";state.scope=$("scope").value;state.difficulty=$("difficulty").value;state.started=true;
  $("setup").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("routeChoices").classList.add("hidden");state.gameOver=false;state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;$("battle").classList.remove("hidden");
  addLog(state.name+"は冒険に出発した！");render();startBattle();
 }
@@ -461,15 +490,16 @@ function optionsFor(q){
  for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
  return opts;
 }
+function timerMax(){return 30+skillLevel("focus")*5}
 function updateTimer(){
  $("timerText").textContent="残り時間："+timeLeft+"秒";
  $("timerText").classList.toggle("timerurgent",timeLeft<=8);
- $("timerBar").style.width=(timeLeft/30*100)+"%";
+ $("timerBar").style.width=(timeLeft/timerMax()*100)+"%";
  $("timerBar").style.background=timeLeft<=8?"#ff7373":timeLeft<=15?"#ffd166":"#8bd450";
 }
 function stopTimer(){if(timerHandle!==null){clearInterval(timerHandle);timerHandle=null;}}
 function startTimer(){
- stopTimer();timeLeft=30;updateTimer();
+ stopTimer();timeLeft=timerMax();updateTimer();
  timerHandle=setInterval(()=>{
    if(state.answered){stopTimer();return;}
    timeLeft--;updateTimer();
@@ -505,7 +535,7 @@ function chooseRoute(key,label){
 }
 function startBattle(){
  stopTimer();state.answered=false;state.question=chooseQuestion();
- if(state.enemyMax<=1 || state.enemyHp<=0){
+ if(state.reviewMode){state.currentEnemy={name:"📚 修行の先生",icon:"📖",boss:false};state.enemyMax=99999;state.enemyHp=99999;}else if(state.enemyMax<=1 || state.enemyHp<=0){
   state.currentEnemy=chooseMonster();
   const boss=!!state.currentEnemy.boss;
   state.enemyMax=boss?95+state.level*8:8+state.place*8+state.level*2;
@@ -526,11 +556,14 @@ function answer(ans,timedOut=false){
  const q=state.question,correct=ans===q[1];$("answerArea").querySelectorAll("button").forEach(b=>b.disabled=true);
  const fb=$("feedback");fb.classList.remove("hidden");fb.className="feedback "+(correct?"good":"bad");
  if(correct){
-  state.correct++;const damage=8+state.level*3+(q.diff==="advanced"?5:0)+state.attackBonus;state.enemyHp=Math.max(0,state.enemyHp-damage);
-  state.xp+=10+(q.diff==="advanced"?5:0);state.gold+=5+Math.floor(Math.random()*6);
-  fb.innerHTML="✨ 正解！ "+escapeHtml(q[4])+"<br>敵に"+damage+"ダメージ！ 経験値とゴールドを獲得した。";
+  state.correct++;state.streak++;state.mana=Math.min(10,state.mana+1+skillLevel("magic")+equippedBonus("mana"));
+  if(state.reviewMode){state.reviewMistakes=state.reviewMistakes.filter(x=>x.reviewKey!==q.reviewKey);}
+  const magicDamage=state.magicReady?.damage||0;const magicName=state.magicReady?.name;state.magicReady=null;
+  const damage=8+state.level*3+(q.diff==="advanced"?5:0)+state.attackBonus+equippedBonus("atk")+skillLevel("power")*3+magicDamage;state.enemyHp=Math.max(0,state.enemyHp-damage);
+  state.xp+=10+(q.diff==="advanced"?5:0)+skillLevel("wisdom")*3;state.gold+=5+Math.floor(Math.random()*6);
+  fb.innerHTML=(magicName?"✨ "+magicName+"発動！<br>":"")+"✨ 正解！ "+escapeHtml(q[4])+"<br>敵に"+damage+"ダメージ！ 経験値とゴールドを獲得した。";
   addLog("正解！ "+labels[q.scope]+"の問題をクリア。");
-  while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.maxHp+=5;state.hp=state.maxHp;addLog("レベルアップ！ Lv."+state.level+"になった。");}
+  while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.skillPoints++;state.maxHp+=5;state.hp=state.maxHp;addLog("レベルアップ！ Lv."+state.level+"になった。");}
   if(state.enemyHp<=0){
    state.kills++;state.gold+=10;fb.innerHTML+="<br>🏆 "+state.currentEnemy.name+"を倒した！ ボーナス10G！";
    addLog(state.currentEnemy.name+"を倒した！");
@@ -541,17 +574,22 @@ function answer(ans,timedOut=false){
    }
   }
  }else{
+  state.streak=0;state.magicReady=null;
+  const reviewKey=q.scope+":"+q[0];if(!state.reviewMistakes.some(x=>x.reviewKey===reviewKey))state.reviewMistakes.push(Object.assign([...q],{scope:q.scope,diff:q.diff,reviewKey}));
   state.wrong++;
-  const receivedDamage=Math.max(1,8-state.defenseBonus);
+  const receivedDamage=Math.max(1,8-state.defenseBonus-equippedBonus("def")-skillLevel("guard"));
   state.hp=Math.max(0,state.hp-receivedDamage);
   fb.innerHTML=(timedOut?"⏰ 時間切れ！":"💦 不正解！")+" 正解は「"+escapeHtml(q[1])+"」。<br>"+escapeHtml(q[4])+"<br>敵の攻撃でHPが"+receivedDamage+"減った。敵のHPはそのまま。";
   addLog("不正解。HPが"+receivedDamage+"減った。");
   if(state.hp<=0){triggerGameOver();return;}
  }
  $("enemyHpText").textContent=state.enemyHp+" / "+state.enemyMax+" HP";$("enemyHpBar").style.width=(state.enemyHp/state.enemyMax*100)+"%";
+ if(state.reviewMode&&!state.reviewMistakes.length){state.reviewMode=false;addLog("復習問題をすべてクリア！");}
  if(state.enemyHp>0){$("nextBtn").classList.remove("hidden");}else{$("nextBtn").classList.add("hidden");}$("hintBtn").disabled=true;render();save(false);
 }
 $("startBtn").addEventListener("click",begin);
+$("reviewBtn").addEventListener("click",()=>{if(!state.started||state.reviewMode||!state.answered||!state.reviewMistakes.length)return;state.reviewMode=true;state.enemyHp=Math.max(1,state.enemyHp);startBattle();});
+$("reviewExitBtn").addEventListener("click",()=>{state.reviewMode=false;state.enemyHp=Math.max(1,state.enemyHp);startBattle();});
 $("hintBtn").addEventListener("click",()=>{$("hint").classList.remove("hidden");$("hintBtn").disabled=true});
 $("nextBtn").addEventListener("click",()=>{
  if(state.gameOver || state.enemyHp<=0)return;
@@ -563,13 +601,13 @@ $("buyPowerBtn").addEventListener("click",()=>shopBuy(40,"力の秘薬を使っ�
 $("buyGuardBtn").addEventListener("click",()=>shopBuy(35,"守りの護符を装備した。受けるダメージが2減る！",()=>{state.defenseBonus+=2;}));
 $("gameOverRestartBtn").addEventListener("click",()=>{
  stopTimer();localStorage.removeItem("mathRpgSave");
- state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};
+ state=initialState();
  $("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");$("enemyBox").classList.add("hidden");render();
 });
 $("saveBtn").addEventListener("click",()=>save(true));
 $("loadBtn").addEventListener("click",()=>load(true));
 $("continueBtn").addEventListener("click",()=>load(true));
-$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state={name:"数学勇者",level:1,xp:0,gold:0,hp:30,maxHp:30,kills:0,place:0,route:"meadow",routeHistory:[],currentEnemy:null,scope:"all",difficulty:"standard",started:false,questionCount:0,correct:0,wrong:0,enemyHp:1,enemyMax:1,question:null,answered:false,attackBonus:0,defenseBonus:0,gameOver:false,log:[]};$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
+$("resetBtn").addEventListener("click",()=>{if(confirm("今の冒険をリセットしますか？")){stopTimer();localStorage.removeItem("mathRpgSave");state=initialState();$("battle").classList.add("hidden");$("endBox").classList.add("hidden");$("gameOverBox").classList.add("hidden");$("setup").classList.remove("hidden");render();}});
 function syncVictorySettings(){
  $("victoryScope").innerHTML=$("scope").innerHTML;
  $("victoryDifficulty").innerHTML=$("difficulty").innerHTML;
@@ -583,7 +621,7 @@ $("againBtn").addEventListener("click",()=>{
  state.usedQuestions=[];
  stopTimer();state.place=0;state.route="meadow";state.routeHistory=[];state.currentEnemy=null;state.enemyHp=1;state.enemyMax=1;state.hp=state.maxHp;state.kills=0;state.gameOver=false;addLog("新しい冒険を始めた。");$("endBox").classList.add("hidden");$("routeChoices").classList.add("hidden");$("battle").classList.remove("hidden");render();startBattle()});
 function save(show){try{localStorage.setItem("mathRpgSave",JSON.stringify(state));if(show)alert("冒険をセーブしました！");}catch(e){if(show)alert("保存できませんでした。ブラウザの保存設定を確認してください。")}}
-function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...state,...loaded};if(!state.route)state.route="meadow";if(!Array.isArray(state.routeHistory))state.routeHistory=[];if(!state.currentEnemy&&state.started){state.enemyHp=1;state.enemyMax=1;}$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
+function load(show){try{const raw=localStorage.getItem("mathRpgSave");if(!raw){if(show)alert("セーブデータがありません。");return;}const loaded=JSON.parse(raw);state={...initialState(),...loaded};initExtras();if(!state.route)state.route="meadow";if(!Array.isArray(state.routeHistory))state.routeHistory=[];if(!state.currentEnemy&&state.started){state.enemyHp=1;state.enemyMax=1;}$("heroName").value=state.name;$("scope").value=state.scope;$("difficulty").value=state.difficulty;$("setup").classList.toggle("hidden",state.started);$("battle").classList.toggle("hidden",!state.started);$("endBox").classList.add("hidden");$("gameOverBox").classList.toggle("hidden",!state.gameOver);render();if(state.started&&!state.gameOver)startBattle();if(show)addLog("セーブデータを読み込んだ。");}catch(e){if(show)alert("セーブデータを読み込めませんでした。")}}
 render();
 if(!$("endBox").classList.contains("hidden"))syncVictorySettings();
 </script>
